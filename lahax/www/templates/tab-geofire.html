@@ -1,0 +1,49 @@
+<ion-view view-title="Dashboard">
+  <ion-content class="padding">
+    <div class="list card">
+      <div class="item item-divider">Recent Updates</div>
+      <div class="item item-body">
+        <div>
+          There is a fire in <b>sector 3</b>
+        </div>
+      </div>
+    </div>
+    <div class="list card">
+      <div class="item item-divider">Health</div>
+      <div class="item item-body">
+        <div>
+          You ate an apple today!
+        </div>
+      </div>
+    </div>
+    <div class="list card">
+      <div class="item item-divider">Upcoming</div>
+      <div class="item item-body">
+        <div>
+          You have <b>29</b> meetings on your calendar tomorrow.
+        </div>
+      </div>
+    </div>
+    <form class="simple-form">
+      key: <input type="text" ng-model="key" /><br />
+      x : <input type="float" ng-model="x_coord" /><br />
+      y : <input type="float" ng-model="y_coord" /><br />
+      <button ng-click="postLocationKey(key, x_coord, y_coord)">Set</button>
+   </form>
+   <form class="simple-form">
+      key: <input type="text" ng-model="user.key" /><br />
+      <button ng-click="getKey(user.key)">Get</button>
+   </form>
+   <form class="simple-form">
+      x : <input type="float" ng-model="x_coord1" /><br />
+      y : <input type="float" ng-model="y_coord1" /><br />
+      radius: <input type="float" ng-model="radius" /><br />
+      <button ng-click="scanLocation(x_coord1, y_coord1, radius)">Find</button>
+   </form>
+<!--
+ -->
+
+
+
+  </ion-content>
+</ion-view>
