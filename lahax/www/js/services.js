@@ -6,9 +6,14 @@ angular.module('starter.services', [])
   return $firebaseAuth(ref);
 }])
 
-.factory('Chats', function() {
+.factory('Chats', function($firebaseArray) {
   // Might use a resource here that returns a JSON array
-
+  var ref = new Firebase("https://lahax.firebaseio.com/message");
+  var testChat = $firebaseArray(ref);
+  var testChat1 = [testChat] 
+  $scope.messages = $firebaseArray(ref);
+  console.log(testChat); 
+  console.log(testChat1); 
   // Some fake testing data
   var chats = [{
     id: 0,

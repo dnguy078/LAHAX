@@ -92,15 +92,17 @@ angular.module('starter.controllers', [])
 	}
 })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
+.controller('ChatsCtrl', function($scope, $firebaseArray) {
+  var ref = new Firebase("https://lahax.firebaseio.com/message");
+  var testChat = $firebaseArray(ref);
+  $scope.messages = $firebaseArray(ref);
+  console.log($scope.messages); 
+
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+    console.log("ChatDetailCtrl called")
+  //$scope.chat = Chats.get($stateParams.chatId);
 })
 
 .controller('AccountCtrl', function($scope) {
