@@ -92,6 +92,7 @@ angular.module('starter.controllers', [])
   var testChat = $firebaseArray(ref);
   $scope.messages = $firebaseArray(ref);
   console.log($scope.messages); 
+})
 
 .controller('MapCtrl', function ($scope, $firebase, $rootScope) {
     console.log("map controller called")
