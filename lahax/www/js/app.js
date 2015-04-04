@@ -86,15 +86,6 @@ angular.module('starter', ['firebase', 'ionic', 'starter.controllers', 'starter.
     }
   })
 
-  .state('tab.map', {
-    url: '/map',
-    views: {
-      'tab-map': {
-        templateUrl: 'templates/tab-map.html',
-        controller: 'DashCtrl'
-      }
-    }
-  })
 
   .state('tab.chats', {
       url: '/chats',
