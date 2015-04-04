@@ -9,6 +9,7 @@ angular.module('starter', ['firebase', 'ionic', 'starter.controllers', 'starter.
 
 .run(function($ionicPlatform, $rootScope) {
   $ionicPlatform.ready(function() {
+    $rootScope.firebaseUrl = "https://lahax.firebaseio.com/"
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -117,21 +118,22 @@ angular.module('starter', ['firebase', 'ionic', 'starter.controllers', 'starter.
     }
   })
 
-    .state('tab.login', {
-      url: '/login',
-      views: {
-        'tab-login': {
-          templateUrl: 'templates/tab-login.html'
-        }
+  .state('tab.map', {
+    url: '/map',
+    views: {
+      'tab-map' : {
+        templateUrl: 'templates/tab-map.html',
+        controller: 'MapCtrl'      
       }
-    })
+    }
+  })
 
-
-    .state('tab.map', {
-      url: '/login',
+    .state('tab.geofire', {
+      url: '/geofire',
       views: {
-        'tab-login': {
-          templateUrl: 'templates/tab-login.html'
+        'tab-geofire': {
+          templateUrl: 'templates/tab-geofire.html',
+          controller: 'GeoFireCtrl'
         }
       }
     })
