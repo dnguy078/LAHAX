@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['firebase', 'ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -34,14 +34,34 @@ angular.module('starter', ['firebase', 'ionic', 'starter.controllers', 'starter.
   .state('login', {
       url: "/login",
       templateUrl: "templates/login.html",
-      controller: 'LoginCtrl'
+      controller: 'LoginCtrl',
+      resolve: {
+        // controller will not be loaded until $waitForAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth",
+            function (Auth) {
+            // $waitForAuth returns a promise so the resolve waits for it to complete
+                return Auth.$waitForAuth();
+            }
+        ] 
+      }
   })
 
   // setup an abstract state for the tabs directive
   .state('tab', {
     url: "/tab",
     abstract: true,
-    templateUrl: "templates/tabs.html"
+    templateUrl: "templates/tabs.html",
+    resolve: {
+        // controller will not be loaded until $requireAuth resolves
+        // Auth refers to our $firebaseAuth wrapper in the example above
+        "currentAuth": ["Auth",
+            function (Auth) {
+         // $requireAuth returns a promise so the resolve waits for it to complete
+         // If the promise is rejected, it will throw a $stateChangeError (see above)
+                return Auth.$requireAuth();
+          }]
+    }
   })
 
   // Each tab has its own nav history stack:
@@ -51,7 +71,17 @@ angular.module('starter', ['firebase', 'ionic', 'starter.controllers', 'starter.
     views: {
       'tab-dash': {
         templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
+        controller: 'DashCtrl',
+        resolve: {
+            // controller will not be loaded until $requireAuth resolves
+            // Auth refers to our $firebaseAuth wrapper in the example above
+            "currentAuth": ["Auth",
+                function (Auth) {
+             // $requireAuth returns a promise so the resolve waits for it to complete
+             // If the promise is rejected, it will throw a $stateChangeError (see above)
+                    return Auth.$requireAuth();
+              }]
+        }
       }
     }
   })
@@ -71,7 +101,17 @@ angular.module('starter', ['firebase', 'ionic', 'starter.controllers', 'starter.
       views: {
         'tab-chats': {
           templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
+          controller: 'ChatsCtrl',
+          resolve: {
+                  // controller will not be loaded until $requireAuth resolves
+                  // Auth refers to our $firebaseAuth wrapper in the example above
+                  "currentAuth": ["Auth",
+                      function (Auth) {
+                   // $requireAuth returns a promise so the resolve waits for it to complete
+                   // If the promise is rejected, it will throw a $stateChangeError (see above)
+                          return Auth.$requireAuth();
+                    }]
+              }
         }
       }
     })
