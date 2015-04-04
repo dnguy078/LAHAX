@@ -80,14 +80,15 @@ angular.module('starter.controllers', [])
 		console.log("Sending Message");
 		var fbRef = new Firebase("https://lahax.firebaseio.com/");
 		var userRef = fbRef.child("message");
-		userRef.set({
-			a : {
-			 	uid : message.uid, 
+		var id = message.uid;
+		var obj = {};
+		obj[id] = {
+				uid : message.uid, 
 				title: message.title,
 				content: message.content, 
 				location: message.location
-			}
-		});
+		};
+		userRef.push(obj);
 	}
 })
 
