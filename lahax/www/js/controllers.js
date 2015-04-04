@@ -73,7 +73,23 @@ angular.module('starter.controllers', [])
     $scope.rooms = Rooms.all(); 
 })
 
-.controller('DashCtrl', function($scope) {})
+.controller('DashCtrl', function($scope, $firebase) {
+	console.log("controller called")
+
+	$scope.postMessage = function(message){
+		console.log("Sending Message");
+		var fbRef = new Firebase("https://lahax.firebaseio.com/");
+		var userRef = fbRef.child("message");
+		userRef.set({
+			a : {
+			 	uid : message.uid, 
+				title: message.title,
+				content: message.content, 
+				location: message.location
+			}
+		});
+	}
+})
 
 .controller('ChatsCtrl', function($scope, Chats) {
   $scope.chats = Chats.all();
