@@ -1,5 +1,11 @@
 angular.module('starter.services', [])
 
+.factory("Auth", ["$firebaseAuth", "$rootScope", function ($firebaseAuth, $rootScope) {
+  $rootScope.firebaseUrl = "https://lahax.firebaseio.com";
+  var ref = new Firebase($rootScope.firebaseUrl);
+  return $firebaseAuth(ref);
+}])
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
