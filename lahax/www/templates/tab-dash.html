@@ -1,5 +1,6 @@
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
+  <!--
     <div class="list card">
       <div class="item item-divider">Recent Updates</div>
       <div class="item item-body">
@@ -24,6 +25,14 @@
         </div>
       </div>
     </div>
+  -->
+  <head>
+    <link href="//code.ionicframework.com/nightly/css/ionic.css" rel="stylesheet">
+
+    <script src="//code.ionicframework.com/nightly/js/ionic.bundle.js"></script> 
+
+  </head>
+<!--
   <form class="simple-form">
       uid: <input type="text" ng-model="user.uid" /><br />
       title : <input type="text" ng-model="user.title" /><br />
@@ -31,9 +40,25 @@
       location :<input type="text" ng-model="user.location" /><br />
       <button ng-click="postMessage(user)">Test</button>
    </form>
-
+-->
   <body>
-    {{user}}
+<!-- {{user}}
+-->
+
+    <button class="button button-balanced" ng-click="showPopup()">
+      <i class="icon ion-plus"></i>
+    </button>
+
+    <script id="popup-postmessage.html" type="text/ng-template">
+
+      <form class="simple-form">
+        uid: <input type="text" ng-model="user.uid" /><br />
+        title : <input type="text" ng-model="user.title" /><br />
+        content : <input type="text" ng-model="user.content" /><br />
+        location :<input type="text" ng-model="user.location" /><br />
+        <button class="button button-full button-balanced" ng-click="postMessage(user)">Post</button>
+      </form>
+    </script>
   </body>
 <!--
  -->

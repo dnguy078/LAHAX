@@ -68,16 +68,19 @@ angular.module('starter.controllers', [])
     }
 })
 
-.controller('DashCtrl', function ($scope, $firebase, $rootScope) {
+.controller('RoomsCtrl', function ($scope, Rooms) {
+    console.log("Rooms Controller initialized");
+    $scope.rooms = Rooms.all(); 
+})
+
+.controller('DashCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
 	console.log("controller called")
 
 	$scope.postMessage = function(message){
 		console.log("Sending Message");
 		var fbRef = new Firebase($rootScope.firebaseUrl);
 		var userRef = fbRef.child("message");
-		var id = message.uid;
-		var obj = {};
-		obj[id] = {
+		var obj = {
 				uid : message.uid, 
 				title: message.title,
 				content: message.content, 
@@ -85,6 +88,22 @@ angular.module('starter.controllers', [])
 		};
 		userRef.push(obj);
 	}
+
+	$scope.showPopup = function() {
+		$scope.data = {};
+	   var myPopup = $ionicPopup.show({
+	 	 templateUrl: 'popup-postmessage.html',
+	     title: 'Create message',
+	     subTitle: 'Craft your message',
+	     scope: $scope,
+	     buttons: [
+	       { text: 'Cancel' } 
+	     ]
+	   });
+	   myPopup.then(function(res) {
+	     console.log('Tapped!', res);
+	   });
+  	};
 })
 
 .controller('ChatsCtrl', function($scope, $firebaseArray) {
