@@ -173,32 +173,33 @@ angular.module('starter.controllers', [])
     }
 
     $scope.getCurrentLocation = new function() {
-        // onSuccess Callback
-        // This method accepts a Position object, which contains the
-        // current GPS coordinates
-        //
-        var onSuccess = function(position) {
-            $scope.x_position = position.coords.latitude;
-            $scope.y_position = position.coords.longitude;
+        var poll = function() {
 
-        //     alert('Latitude: '          + position.coords.latitude          + '\n' +
-        //           'Longitude: '         + position.coords.longitude         + '\n' +
-        //           'Altitude: '          + position.coords.altitude          + '\n' +
-        //           'Accuracy: '          + position.coords.accuracy          + '\n' +
-        //           'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-        //           'Heading: '           + position.coords.heading           + '\n' +
-        //           'Speed: '             + position.coords.speed             + '\n' +
-        //           'Timestamp: '         + position.timestamp                + '\n');
-        };
+            // onSuccess Callback
+            // This method accepts a Position object, which contains the
+            // current GPS coordinates
+            //
+            var onSuccess = function(position) {
+                $scope.latitude = position.coords.latitude;
+                $scope.longitude = position.coords.longitude;
+            };
 
-        // onError Callback receives a PositionError object
-        //
-        function onError(error) {
-            alert('code: '    + error.code    + '\n' +
-                  'message: ' + error.message + '\n');
+            // onError Callback receives a PositionError object
+            //
+            var onError = function(error) {
+                alert('code: '    + error.code    + '\n' +
+                      'message: ' + error.message + '\n');
+            }
+            
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+            setTimeout(function() {
+                console.log("Called.")
+                navigator.geolocation.getCurrentPosition(onSuccess, onError);
+                poll();
+            }, 5000);
         }
-
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+        poll();
     }
 })
 
