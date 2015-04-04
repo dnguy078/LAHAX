@@ -73,12 +73,12 @@ angular.module('starter.controllers', [])
     $scope.rooms = Rooms.all(); 
 })
 
-.controller('DashCtrl', function($scope, $firebase, $ionicPopup) {
+.controller('DashCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
 	console.log("controller called")
 
 	$scope.postMessage = function(message){
 		console.log("Sending Message");
-		var fbRef = new Firebase("https://lahax.firebaseio.com/");
+		var fbRef = new Firebase($rootScope.firebaseUrl);
 		var userRef = fbRef.child("message");
 		var obj = {
 				uid : message.uid, 
@@ -106,15 +106,77 @@ angular.module('starter.controllers', [])
   	};
 })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
+.controller('ChatsCtrl', function($scope, $firebaseArray) {
+  var ref = new Firebase("https://lahax.firebaseio.com/message");
+  var testChat = $firebaseArray(ref);
+  $scope.messages = $firebaseArray(ref);
+  console.log($scope.messages); 
 })
 
+.controller('MapCtrl', function ($scope, $firebase, $rootScope) {
+    console.log("map controller called")
+
+    $scope.initializeMap = new function initialize() {
+        var mapOptions = {
+          center: { lat: -34.397, lng: 150.644},
+          zoom: 8
+        };
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+    }
+})
+
+.controller('GeoFireCtrl', function ($scope, $firebase, $rootScope) {
+    console.log("controller called")
+
+    $scope.postLocationKey = function(key, x_coord, y_coord) {
+        console.log("Sending Message");
+        var fbRef = new Firebase($rootScope.firebaseUrl);
+        var userRef = fbRef.child("_geofire");
+        var geoFire = new GeoFire(userRef);
+        geoFire.set(key, [parseFloat(x_coord), parseFloat(y_coord)]).then(function() {
+          console.log("Provided keys have been added to GeoFire");
+        }, function(error) {
+          console.log("Error: " + error);
+        });
+    }
+
+    $scope.getKey = function(key) {
+        console.log("Retrieving Message");
+        var fbRef = new Firebase($rootScope.firebaseUrl);
+        var userRef = fbRef.child("_geofire");
+        var geoFire = new GeoFire(userRef);
+        geoFire.get(key).then(function(location) {
+          if (location === null) {
+            console.log("Provided key is not in GeoFire");
+          }
+          else {
+            console.log("Provided key has a location of " + location);
+          }
+        }, function(error) {
+          console.log("Error: " + error);
+        });
+    }
+
+    $scope.scanLocation = function(x, y, r) {
+        console.log("Finding Messages");
+        var fbRef = new Firebase($rootScope.firebaseUrl);
+        var userRef = fbRef.child("_geofire");
+        var geoFire = new GeoFire(userRef);
+        var geoQuery = geoFire.query({
+            center : [parseFloat(x), parseFloat(y)],
+            radius : parseFloat(r)
+        });
+        geoQuery.on("key_entered", function(key, location, distance) {
+            console.log(key + " at distance " + distance);
+        });
+    }
+})
+
+
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+    console.log("ChatDetailCtrl called")
+  //$scope.chat = Chats.get($stateParams.chatId);
 })
 
 .controller('AccountCtrl', function($scope) {
