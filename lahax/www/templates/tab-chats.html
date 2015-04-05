@@ -5,11 +5,15 @@
 
       <a class="item item-thumbnail-left"  href="#">
         <img src="https://lh3.googleusercontent.com/-8jienLAMEug/AAAAAAAAAAI/AAAAAAAAAAA/hYwnFLUtMC0/photo.jpg">
+
         <h1 style="text-align:left"> {{chat.title}} </h1>
-        <h2> Name {{chat.uid}} </h2>
+        <h2> Name {{chat.displayName}} </h2>
         <p style="color:blue"> Likes: {{chat.upvote}} </p>
         <p style="color:red"> Dislikes: {{chat.downvote}}</p>
-        <p> Time remaining </p>   
+        <div posted='{{chat.timestamp}}'> Time posted {{chat.timestamp}} </div>
+<!--        <div ng-bind-html="time"> Current time {{ time | date:'medium'}}</div>
+        <div ng-bind-html="remain">{{ remain | date:'medium'}}</div>  
+      -->
       </a>  
 
         <i class="icon ion-chevron-right icon-accessory"></i>

@@ -104,6 +104,24 @@ angular.module('starter.controllers', [])
                 lat: parseFloat(message.latitude),
                 lng: parseFloat(message.longitude)
         };
+
+        //get timestamp
+        var timestamp = new Date().getTime();
+		date = new Date(timestamp);
+		datevalues = [
+		   date.getFullYear(),
+		   date.getMonth()+1,
+		   date.getDate(),
+		   date.getHours(),
+		   date.getMinutes(),
+		   date.getSeconds(),
+		];
+		var readable_date = "" + datevalues[1] + "/" + datevalues[2] + "/" 
+			+ datevalues[0] + " " + datevalues[3] + ":" 
+			+ datevalues[4] + ":" + datevalues[5];
+
+		sharedProperties.setTimePosted(readable_date);
+
 		var obj = {
 				uid : sharedProperties.getUID(), 
 				title: message.title,
@@ -111,6 +129,7 @@ angular.module('starter.controllers', [])
 				location: location,
 				privateMode: message.privateMode,
 				displayName: sharedProperties.getDisplayName(), 
+				timestamp: readable_date,
                 upvote: 0,
                 downvote: 0,
                 postID: ""
@@ -238,14 +257,58 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatsCtrl', function($scope, $firebaseArray, $rootScope) {
+.controller('ChatsCtrl', function($scope, $timeout, $firebaseArray, $rootScope, sharedProperties) {
 	console.log('ChatsCtrl');
-   var ref = new Firebase("https://lahax.firebaseio.com/message");
-   var testChat = $firebaseArray(ref);
-  $scope.messages = testChat;
-  console.log($scope.messages); 
 
+   	var ref = new Firebase("https://lahax.firebaseio.com/message");
+   	var testChat = $firebaseArray(ref);
+  	$scope.messages = testChat;
+  	console.log($scope.messages);
 
+    $scope.time = "loading clock..."; // initialise the time variable
+    $scope.remain = "test";
+    $scope.tickInterval = 1000 //ms
+
+    var tick = function() {
+    	var timestamp = new Date().getTime();
+		date = new Date(timestamp);
+		datevalues = [
+		   date.getFullYear(),
+		   date.getMonth()+1,
+		   date.getDate(),
+		   date.getHours(),
+		   date.getMinutes(),
+		   date.getSeconds(),
+		];
+		$scope.time = datevalues[1] + "/" + datevalues[2] + "/" 
+			+ datevalues[0] + " " + datevalues[3] + ":" 
+			+ datevalues[4] + ":" + datevalues[5];
+
+		$timeout(tick, $scope.tickInterval); // reset the timer
+
+		var timePosted = sharedProperties.getTimePosted();
+		var dateAndTime = timePosted.split(' ');
+		var timeSplit = dateAndTime.split(':');
+		//5 hours
+		var newHour = parseInt(timeSplit[0]) + 5;
+
+		var hourLeft = newHour - parseInt(datevalues[3]); 
+		var minLeft = parseInt(timeSplit[1]) - parseInt(datevalues[4]);
+		var secLeft = parseInt(timeSplit[2]) - parseInt(datevalues[5]);
+		$scope.remain = hourLeft + ":" + minLeft + ":" + secLeft;	
+		$scope.remain = "test";
+        $timeout(tick, $scope.tickInterval); // reset the timer
+    }
+
+    var tick2 = function(sharedProperties) {
+    			//Posted time	
+
+        
+        $timeout(tick, $scope.tickInterval); // reset the timer
+    }
+    // Start the timer
+    $timeout(tick, $scope.tickInterval);	
+ 
 
   $scope.upvote = function(userid) {
     var fbRef = new Firebase($rootScope.firebaseUrl); 
@@ -284,10 +347,9 @@ angular.module('starter.controllers', [])
 
   }; 
 
-
 })
 
-.controller('MapCtrl', function ($scope, $state, $firebase, $rootScope, $ionicPopup, sharedProperties) {
+.controller('MapCtrl', function ($scope, $state, $firebase, $rootScope, $ionicPopup, $sharedProperties) {
     console.log("map controller called")
 
     $scope.updateMap = function() {
