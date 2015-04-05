@@ -114,15 +114,44 @@ angular.module('starter.controllers', [])
 })
 
 .controller('MapCtrl', function ($scope, $firebase, $rootScope) {
-    console.log("map controller called")
+    console.log("map controller called");
 
-    $scope.initializeMap = new function initialize() {
-        var mapOptions = {
-          center: { lat: -34.397, lng: 150.644},
-          zoom: 8
+    $scope.initializeMap = new function ($scope) {
+        var onSuccess = function(position) {
+            $rootScope.latitude = position.coords.latitude;
+            $rootScope.longitude = position.coords.longitude;
+            var coords = new google.maps.LatLng($rootScope.latitude, $rootScope.longitude);
+
+            var mapOptions = {
+              center: { lat: $rootScope.latitude, lng: $rootScope.longitude},
+              zoom: 15
+            };
+
+            var map = new google.maps.Map(document.getElementById('map-canvas'),
+                mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: coords,
+                map: map,
+                title:"You are here!"
+            })
         };
-        var map = new google.maps.Map(document.getElementById('map-canvas'),
-            mapOptions);
+
+        // onError Callback receives a PositionError object
+        //
+        var onError = function(error) {
+            alert('code: '    + error.code    + '\n' +
+                  'message: ' + error.message + '\n');
+
+            var mapOptions = {
+              center: { lat: 34.0722, lng: 118.4441},
+              zoom: 8
+            };
+            var map = new google.maps.Map(document.getElementById('map-canvas'),
+                mapOptions);
+        };
+
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
 })
 
