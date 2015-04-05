@@ -101,8 +101,8 @@ angular.module('starter.controllers', [])
 		var fbRef = new Firebase($rootScope.firebaseUrl);
 		var userRef = fbRef.child("message");
         var location = {
-                lat: parseFloat($scope.latitude),
-                lng: parseFloat($scope.longitude)
+                lat: parseFloat(message.latitude),
+                lng: parseFloat(message.longitude)
         };
 		var obj = {
 				uid : sharedProperties.getUID(), 
@@ -112,8 +112,14 @@ angular.module('starter.controllers', [])
 				privateMode: message.privateMode,
 				displayName: sharedProperties.getDisplayName()
 		};
-		userRef.push(obj);
-
+		var objRef = userRef.push(obj);
+        var geoRef = fbRef.child("_geofire");
+        var geoFire = new GeoFire(geoRef);
+        geoFire.set(objRef.name(), [location.lat, location.lng]).then(function() {
+            console.log("Provided keys have been added to GeoFire");
+        }, function(error) {
+            console.log("Error: " + error);
+        });
 	}
 /*
 	$scope.showPopup = function() {

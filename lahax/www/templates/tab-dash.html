@@ -26,16 +26,16 @@
 -->
      <div class="list">
       <label class="item item-input">
-        <input type="text" placeholder="uid" ng-model="message.uid">
-      </label>
-      <label class="item item-input">
         <input type="text" placeholder="title" ng-model="message.title">
       </label>
       <label class="item item-input">
         <textarea placeholder="content" ng-model="message.content"></textarea>
       </label>
       <label class="item item-input">
-        <input type="text" placeholder="location" ng-model="message.location">
+        <input type="float" placeholder="latitude" ng-model="message.latitude">
+      </label>
+      <label class="item item-input">
+        <input type="float" placeholder="longitude" ng-model="message.longitude">
       </label>
       <label class="item item-input">
         <ion-toggle ng-model="message.privateMode" toggle-class="toggle-calm">Private Post</ion-toggle>
