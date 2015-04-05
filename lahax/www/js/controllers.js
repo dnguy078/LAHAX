@@ -175,6 +175,11 @@ angular.module('starter.controllers', [])
         var coords = new google.maps.LatLng($rootScope.coords.lat,
                                             $rootScope.coords.lng);
 
+        $rootScope.geoQuery.cancel();
+        for (var i = $rootScope.messageMarkers.length - 1; i >= 0; i--) {
+            $rootScope.messageMarkers[i].setMap(null);
+        };
+
         $rootScope.usermarker = new google.maps.Marker({
             position: coords,
             map: $rootScope.map,
@@ -208,7 +213,7 @@ angular.module('starter.controllers', [])
 
         var mapOptions = {
           center: coords,
-          zoom: 12
+          zoom: 15
         };
 
         $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -228,7 +233,7 @@ angular.module('starter.controllers', [])
 
             var mapOptions = {
               center: coords,
-              zoom: 12
+              zoom: 15
             }
 
             $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
