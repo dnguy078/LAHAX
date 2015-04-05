@@ -260,55 +260,54 @@ angular.module('starter.controllers', [])
 .controller('ChatsCtrl', function($scope, $timeout, $firebaseArray, $rootScope, sharedProperties) {
 	console.log('ChatsCtrl');
 
-   	var ref = new Firebase("https://lahax.firebaseio.com/message");
-   	var testChat = $firebaseArray(ref);
-  	$scope.messages = testChat;
-  	console.log($scope.messages);
-/*
-    $scope.time = "loading clock..."; // initialise the time variable
-    $scope.remain = "test";
-    $scope.tickInterval = 1000 //ms
+  $scope.addPost = function(key, location, distance) {
+    var fbRef = new Firebase($rootScope.firebaseUrl);
+    var ref = fbRef.child("message").child(key).once('value', function(snapshot) {
+        var val = snapshot.val();
+        console.log(val);
+        $scope.messages[key] = val;
+    });
+  }
 
-    var tick = function() {
-    	var timestamp = new Date().getTime();
-		date = new Date(timestamp);
-		datevalues = [
-		   date.getFullYear(),
-		   date.getMonth()+1,
-		   date.getDate(),
-		   date.getHours(),
-		   date.getMinutes(),
-		   date.getSeconds(),
-		];
-		$scope.time = datevalues[1] + "/" + datevalues[2] + "/" 
-			+ datevalues[0] + " " + datevalues[3] + ":" 
-			+ datevalues[4] + ":" + datevalues[5];
+  $scope.removePost = function(key, location, distance) {
+    delete $scope.messages[key];
+  }
 
-		$timeout(tick, $scope.tickInterval); // reset the timer
+  $scope.updateFeed = function() {
+    // update the query center
+    $rootScope.feedQuery.updateCriteria({
+        center: [$rootScope.coords.lat, $rootScope.coords.lng],
+        radius: 20
+    });
+  }
 
-		var timePosted = sharedProperties.getTimePosted();
-		var dateAndTime = timePosted.split(' ');
-		var timeSplit = dateAndTime.split(':');
-		//5 hours
-		var newHour = parseInt(timeSplit[0]) + 5;
+  $scope.messages = {};
+  console.log($scope.messages);
 
-		var hourLeft = newHour - parseInt(datevalues[3]); 
-		var minLeft = parseInt(timeSplit[1]) - parseInt(datevalues[4]);
-		var secLeft = parseInt(timeSplit[2]) - parseInt(datevalues[5]);
-		$scope.remain = hourLeft + ":" + minLeft + ":" + secLeft;	
-		$scope.remain = "test";
-        $timeout(tick, $scope.tickInterval); // reset the timer
+  // start with a default user coordinate if not already initialized
+  if (!$rootScope.coords) {
+    $rootScope.coords = {
+        lat: 37.0,
+        lng: -122.06
     }
+  }
 
-    var tick2 = function(sharedProperties) {
-    			//Posted time	
+  // initiaize geoFire query
+  var fbRef = new Firebase($rootScope.firebaseUrl);
+  var geoRef = fbRef.child("_geofire");
+  var geoFire = new GeoFire(geoRef);
+  $rootScope.feedQuery = geoFire.query({
+    center: [$rootScope.coords.lat, $rootScope.coords.lng],
+    radius: 20
+  });
+  $rootScope.feedMessages = {};
 
-        
-        $timeout(tick, $scope.tickInterval); // reset the timer
-    }
-    // Start the timer
-    $timeout(tick, $scope.tickInterval);	
- */
+  // setup call-backs for the geoFire query
+  $rootScope.feedQuery.on("key_entered", $scope.addPost);
+  $rootScope.feedQuery.on("key_exited", $scope.removePost);
+
+  // watch the user's current location
+  $rootScope.$watch("coords", $scope.updateFeed, objectEquality=true);
 
   $scope.upvote = function(userid) {
     var fbRef = new Firebase($rootScope.firebaseUrl); 
