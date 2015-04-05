@@ -1,5 +1,28 @@
 angular.module('starter.services', [])
 
+/*
+ sharedProperties among controllers
+ */
+    .service('sharedProperties', function () {
+        var uid = '';
+        var displayName = '';
+        
+        return {
+            getUID: function () {
+                return uid;
+            },
+            setUID: function(value) {
+                uid = value;
+            },
+            getDisplayName: function () {
+              return displayName;
+            },
+            setDisplayName: function(value) {
+              displayName = value;
+            }
+        };
+    })
+
 .factory("Auth", ["$firebaseAuth", "$rootScope", function ($firebaseAuth, $rootScope) {
   $rootScope.firebaseUrl = "https://lahax.firebaseio.com";
   var ref = new Firebase($rootScope.firebaseUrl);
