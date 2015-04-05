@@ -6,6 +6,7 @@ angular.module('starter.services', [])
     .service('sharedProperties', function () {
         var uid = '';
         var displayName = '';
+        var timePosted = '';
         
         return {
             getUID: function () {
@@ -19,7 +20,14 @@ angular.module('starter.services', [])
             },
             setDisplayName: function(value) {
               displayName = value;
+            },
+            getTimePosted: function() {
+                return timePosted;
+            },
+            setTimePosted: function(value) {
+                timePosted = value;
             }
+
         };
     })
 
@@ -82,3 +90,5 @@ angular.module('starter.services', [])
     }
   };
 });
+
+
