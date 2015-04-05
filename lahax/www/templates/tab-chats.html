@@ -5,22 +5,25 @@
 
       <a class="item item-thumbnail-left"  href="#">
         <img src="https://lh3.googleusercontent.com/-8jienLAMEug/AAAAAAAAAAI/AAAAAAAAAAA/hYwnFLUtMC0/photo.jpg">
-        <h1 style="text-align:center"> Title {{chat.title}} </h1>
+
+        <h1 style="text-align:left"> {{chat.title}} </h1>
         <h2> Name {{chat.displayName}} </h2>
-        <p> Upvotes / Downvotes </p>
+        <p style="color:blue"> Likes: {{chat.upvote}} </p>
+        <p style="color:red"> Dislikes: {{chat.downvote}}</p>
         <div posted='{{chat.timestamp}}'> Time posted {{chat.timestamp}} </div>
-        <div ng-bind-html="time">{{ time | date:'medium'}}</div>
-        <div ng-bind-html="remain">{{ remain | date:'medium'}}</div>
+<!--        <div ng-bind-html="time"> Current time {{ time | date:'medium'}}</div>
+        <div ng-bind-html="remain">{{ remain | date:'medium'}}</div>  
+      -->
       </a>  
 
         <i class="icon ion-chevron-right icon-accessory"></i>
 
-        <ion-option-button class="button-assertive" ng-click="downvote(chat)">
+        <ion-option-button class="button-assertive" ng-click="downvote(chat.postID)">
           <i class="icon ion-thumbsdown"></i>
         </ion-option-button>
 
         <i class="icon ion-chevron-left icon-accessory"></i>
-        <ion-option-button class="button-positive" ng-click="upvote(chat)">
+        <ion-option-button class="button-positive" ng-click="upvote(chat.postID)">
           <i class="icon ion-thumbsup"></i>
         </ion-option-button>
 
