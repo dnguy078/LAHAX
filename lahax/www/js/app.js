@@ -128,15 +128,15 @@ angular.module('starter', ['firebase', 'ionic', 'ngCordova', 'starter.controller
     }
   })
 
-    .state('tab.geofire', {
-      url: '/geofire',
-      views: {
-        'tab-geofire': {
-          templateUrl: 'templates/tab-geofire.html',
-          controller: 'GeoFireCtrl'
-        }
-      }
-    })
+    // .state('tab.geofire', {
+    //   url: '/geofire',
+    //   views: {
+    //     'tab-geofire': {
+    //       templateUrl: 'templates/tab-geofire.html',
+    //       controller: 'GeoFireCtrl'
+    //     }
+    //   }
+    // })
 
   .state('tab.account', {
     url: '/account',

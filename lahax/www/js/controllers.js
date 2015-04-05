@@ -368,43 +368,43 @@ angular.module('starter.controllers', [])
     }
 })
 
-.controller('GeoFireCtrl', function ($scope, $firebase, $rootScope, sharedProperties) {
-    console.log("controller called")
+// .controller('GeoFireCtrl', function ($scope, $firebase, $rootScope, sharedProperties) {
+//     console.log("controller called")
 
-    $scope.postLocationKey = function(key, x_coord, y_coord) {
-        console.log("Sending Message");
-        var fbRef = new Firebase($rootScope.firebaseUrl);
-        var userRef = fbRef.child("_geofire");
-        var geoFire = new GeoFire(userRef);
-        geoFire.set(key, [parseFloat(x_coord), parseFloat(y_coord)]).then(function() {
-          console.log("Provided keys have been added to GeoFire");
-        }, function(error) {
-          console.log("Error: " + error);
-        });
-    }
+//     $scope.postLocationKey = function(key, x_coord, y_coord) {
+//         console.log("Sending Message");
+//         var fbRef = new Firebase($rootScope.firebaseUrl);
+//         var userRef = fbRef.child("_geofire");
+//         var geoFire = new GeoFire(userRef);
+//         geoFire.set(key, [parseFloat(x_coord), parseFloat(y_coord)]).then(function() {
+//           console.log("Provided keys have been added to GeoFire");
+//         }, function(error) {
+//           console.log("Error: " + error);
+//         });
+//     }
 
-    $scope.deleteKey = function(key) {
-        console.log("Deleting message...");
-        var fbRef = new Firebase($rootScope.firebaseUrl);
-        var userRef = fbRef.child("_geofire");
-        var geoFire = new GeoFire(userRef);
-        geoFire.remove(key);
-    }
+//     $scope.deleteKey = function(key) {
+//         console.log("Deleting message...");
+//         var fbRef = new Firebase($rootScope.firebaseUrl);
+//         var userRef = fbRef.child("_geofire");
+//         var geoFire = new GeoFire(userRef);
+//         geoFire.remove(key);
+//     }
 
-    $scope.scanLocation = function(x, y, r) {
-        console.log("Finding Messages");
-        var fbRef = new Firebase($rootScope.firebaseUrl);
-        var userRef = fbRef.child("_geofire");
-        var geoFire = new GeoFire(userRef);
-        var geoQuery = geoFire.query({
-            center : [parseFloat(x), parseFloat(y)],
-            radius : parseFloat(r)
-        });
-        geoQuery.on("key_entered", function(key, location, distance) {
-            console.log(key + " at distance " + distance);
-        });
-    }
-})
+//     $scope.scanLocation = function(x, y, r) {
+//         console.log("Finding Messages");
+//         var fbRef = new Firebase($rootScope.firebaseUrl);
+//         var userRef = fbRef.child("_geofire");
+//         var geoFire = new GeoFire(userRef);
+//         var geoQuery = geoFire.query({
+//             center : [parseFloat(x), parseFloat(y)],
+//             radius : parseFloat(r)
+//         });
+//         geoQuery.on("key_entered", function(key, location, distance) {
+//             console.log(key + " at distance " + distance);
+//         });
+//     }
+// })
 
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats, sharedProperties) {
