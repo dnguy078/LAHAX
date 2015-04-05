@@ -1,8 +1,8 @@
-<ion-view view-title="Chats">
+<ion-view view-title="Feed">
   <ion-content>
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in messages" type="item-text-wrap"> 
-
+<!--
       <a class="item item-thumbnail-left"  href="#">
         <img src="https://lh3.googleusercontent.com/-8jienLAMEug/AAAAAAAAAAI/AAAAAAAAAAA/hYwnFLUtMC0/photo.jpg">
 
@@ -11,10 +11,42 @@
         <p style="color:blue"> Likes: {{chat.upvote}} </p>
         <p style="color:red"> Dislikes: {{chat.downvote}}</p>
         <div posted='{{chat.timestamp}}'> Time posted {{chat.timestamp}} </div>
-<!--        <div ng-bind-html="time"> Current time {{ time | date:'medium'}}</div>
-        <div ng-bind-html="remain">{{ remain | date:'medium'}}</div>  
-      -->
+
       </a>  
+    -->
+    <div class="list card">
+
+    <div class="item item-avatar">
+      <img src="https://lh3.googleusercontent.com/-8jienLAMEug/AAAAAAAAAAI/AAAAAAAAAAA/hYwnFLUtMC0/photo.jpg">
+      <h2 style="color:blue"> {{chat.displayName}}</h2> <br />
+      <p class="subdued" posted='{{chat.timestamp}}'>{{chat.timestamp}} </p>
+    </div>
+
+    <div class="item item-body">
+      <h1>{{chat.title}}</h1>
+      <p>
+        {{chat.content}}
+      </p>
+      <p>
+        <a href="#" class="subdued" style="color:blue"> {{chat.upvote}} likes</a>
+        <a href="#" class="subdued" style="color:red">{{chat.downvote}} dislikes</a>
+      </p>
+    </div>
+
+    <div class="item tabs tabs-secondary tabs-icon-left">
+
+      <a class="tab-item" href="#">
+        <i class="icon ion-chatbox"></i>
+        Comment
+      </a>
+      <a class="tab-item" href="#">
+        <i class="icon ion-share"></i>
+        Share
+      </a>
+    </div>
+
+  </div>
+
 
         <i class="icon ion-chevron-right icon-accessory"></i>
 
@@ -31,3 +63,4 @@
     </ion-list>
   </ion-content>
 </ion-view>
+

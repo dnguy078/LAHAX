@@ -59,7 +59,7 @@ angular.module('starter.controllers', [])
                     });
                 });
                 $ionicLoading.hide();
-                $state.go('tab.dash');
+                $state.go('tab.chats');
 
                 //$scope.getUserInfo(user);
                 //
@@ -264,7 +264,7 @@ angular.module('starter.controllers', [])
    	var testChat = $firebaseArray(ref);
   	$scope.messages = testChat;
   	console.log($scope.messages);
-
+/*
     $scope.time = "loading clock..."; // initialise the time variable
     $scope.remain = "test";
     $scope.tickInterval = 1000 //ms
@@ -308,7 +308,7 @@ angular.module('starter.controllers', [])
     }
     // Start the timer
     $timeout(tick, $scope.tickInterval);	
- 
+ */
 
   $scope.upvote = function(userid) {
     var fbRef = new Firebase($rootScope.firebaseUrl); 
@@ -349,7 +349,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('MapCtrl', function ($scope, $state, $firebase, $rootScope, $ionicPopup, $sharedProperties) {
+.controller('MapCtrl', function ($scope, $state, $firebase, $rootScope, $ionicPopup, sharedProperties) {
     console.log("map controller called")
 
     $scope.updateMap = function() {
