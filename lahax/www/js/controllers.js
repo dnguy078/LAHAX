@@ -1,6 +1,7 @@
 angular.module('starter.controllers', [])
 
-.controller('LoginCtrl', function ($scope, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope) {
+
+.controller('LoginCtrl', function ($scope, $ionicModal, $state, $firebaseAuth, $ionicLoading, $rootScope, sharedProperties) {
     console.log('Login Controller Initialized');
     console.log($rootScope.firebaseUrl);
 
@@ -59,6 +60,19 @@ angular.module('starter.controllers', [])
                 });
                 $ionicLoading.hide();
                 $state.go('tab.dash');
+
+                //$scope.getUserInfo(user);
+                //
+                //
+                ////once signed in, store user name and unique id
+			    var uniqueID = authData.uid.split(':');
+			    $scope.uid = uniqueID[1];
+			    sharedProperties.setUID(uniqueID[1]);
+				var reff = new Firebase("https://lahax.firebaseio.com/users/" + authData.uid);
+				reff.once("value", function(data) {
+					sharedProperties.setDisplayName(data.val().displayName);
+				});
+				
             }).catch(function (error) {
                 alert("Authentication failed:" + error.message);
                 $ionicLoading.hide();
@@ -66,30 +80,37 @@ angular.module('starter.controllers', [])
         } else
             alert("Please enter email and password both");
     }
+
 })
 
-.controller('RoomsCtrl', function ($scope, Rooms) {
+.controller('RoomsCtrl', function ($scope, Rooms, sharedProperties) {
     console.log("Rooms Controller initialized");
     $scope.rooms = Rooms.all(); 
 })
 
-.controller('DashCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
+.controller('DashCtrl', function ($scope, $firebase, $rootScope, $ionicPopup, sharedProperties) {
 	console.log("controller called")
-/*
+	console.log(sharedProperties.getUID());
+
 	$scope.postMessage = function(message){
+		if ( message.privateMode === undefined ) {
+			message.privateMode = false;
+		}
 		console.log("Sending Message");
 		var fbRef = new Firebase($rootScope.firebaseUrl);
 		var userRef = fbRef.child("message");
 		var obj = {
-				uid : message.uid, 
+				uid : sharedProperties.getUID(), 
 				title: message.title,
 				content: message.content, 
-				location: message.location
+				location: message.location,
+				privateMode: message.privateMode,
+				displayName: sharedProperties.getDisplayName()
 		};
 		userRef.push(obj);
 
 	}
-
+/*
 	$scope.showPopup = function() {
 		$scope.data = {};
 	   var myPopup = $ionicPopup.show({
@@ -105,7 +126,7 @@ angular.module('starter.controllers', [])
 	     console.log('Tapped!', res);
 	   });
   	};
-  	*/
+*/
 })
 
 .controller('ChatsCtrl', function($scope, $firebaseArray) {
@@ -115,7 +136,7 @@ angular.module('starter.controllers', [])
   console.log($scope.messages); 
 })
 
-.controller('MapCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
+.controller('MapCtrl', function ($scope, $state, $firebase, $rootScope, $ionicPopup, sharedProperties) {
     console.log("map controller called")
 
     $scope.updateMap = function() {
@@ -161,6 +182,10 @@ angular.module('starter.controllers', [])
         navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
 
+    $scope.postMessage = function() {
+    	$state.go('tab.dash');
+    }
+/*
     $scope.postMessage = function(message, self){
 		console.log("Sending Message");
 		var fbRef = new Firebase($rootScope.firebaseUrl);
@@ -208,9 +233,10 @@ angular.module('starter.controllers', [])
 	     console.log('Tapped!', res);
 	   });
   	};
+  	*/
 })
 
-.controller('GeoFireCtrl', function ($scope, $firebase, $rootScope) {
+.controller('GeoFireCtrl', function ($scope, $firebase, $rootScope, sharedProperties) {
     console.log("controller called")
 
     $scope.postLocationKey = function(key, x_coord, y_coord) {
@@ -289,7 +315,7 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+.controller('ChatDetailCtrl', function($scope, $stateParams, Chats, sharedProperties) {
     console.log("ChatDetailCtrl called")
   //$scope.chat = Chats.get($stateParams.chatId);
 })
