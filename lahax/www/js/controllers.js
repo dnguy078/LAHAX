@@ -118,13 +118,42 @@ angular.module('starter.controllers', [])
 .controller('MapCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
     console.log("map controller called")
 
-    $scope.initializeMap = new function initialize() {
-        var mapOptions = {
-          center: { lat: -34.397, lng: 150.644},
-          zoom: 8
+    $scope.initializeMap = new function ($scope) {
+        var onSuccess = function(position) {
+            $rootScope.latitude = position.coords.latitude;
+            $rootScope.longitude = position.coords.longitude;
+            var coords = new google.maps.LatLng($rootScope.latitude, $rootScope.longitude);
+
+            var mapOptions = {
+              center: { lat: $rootScope.latitude, lng: $rootScope.longitude},
+              zoom: 15
+            };
+
+            var map = new google.maps.Map(document.getElementById('map-canvas'),
+                mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: coords,
+                map: map,
+                title:"You are here!"
+            })
         };
-        var map = new google.maps.Map(document.getElementById('map-canvas'),
-            mapOptions);
+
+        // onError Callback receives a PositionError object
+        //
+        var onError = function(error) {
+            alert('code: '    + error.code    + '\n' +
+                  'message: ' + error.message + '\n');
+
+            var mapOptions = {
+              center: { lat: 43.0722, lng: 118.4441},
+              zoom: 8
+            };
+            var map = new google.maps.Map(document.getElementById('map-canvas'),
+                mapOptions);
+        };
+
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
 
     $scope.postMessage = function(message, self){
@@ -220,6 +249,37 @@ angular.module('starter.controllers', [])
         geoQuery.on("key_entered", function(key, location, distance) {
             console.log(key + " at distance " + distance);
         });
+    }
+
+    $scope.getCurrentLocation = new function() {
+        var poll = function() {
+
+            // onSuccess Callback
+            // This method accepts a Position object, which contains the
+            // current GPS coordinates
+            //
+            var onSuccess = function(position) {
+                $scope.latitude = position.coords.latitude;
+                $scope.longitude = position.coords.longitude;
+                $scope.$apply();
+            };
+
+            // onError Callback receives a PositionError object
+            //
+            var onError = function(error) {
+                alert('code: '    + error.code    + '\n' +
+                      'message: ' + error.message + '\n');
+            }
+            
+            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+            setTimeout(function() {
+                console.log("Called.")
+                navigator.geolocation.getCurrentPosition(onSuccess, onError);
+                poll();
+            }, 10000);
+        }
+        poll();
     }
 })
 
