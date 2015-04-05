@@ -211,8 +211,7 @@ angular.module('starter.controllers', [])
             var onSuccess = function(position) {
                 $scope.latitude = position.coords.latitude;
                 $scope.longitude = position.coords.longitude;
-                alert('latitude: ' + position.coords.latitude + '\n' +
-                      'longitude' + position.coords.longitude)
+                $scope.$apply();
             };
 
             // onError Callback receives a PositionError object
@@ -228,7 +227,7 @@ angular.module('starter.controllers', [])
                 console.log("Called.")
                 navigator.geolocation.getCurrentPosition(onSuccess, onError);
                 poll();
-            }, 5000);
+            }, 10000);
         }
         poll();
     }
