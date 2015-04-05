@@ -297,7 +297,8 @@ angular.module('starter.controllers', [])
         var coords = new google.maps.LatLng($rootScope.coords.lat, $rootScope.coords.lng);
         var mapOptions = {
             center: coords,
-            zoom: 15
+            zoom: 15,
+            disableDefaultUI: true
         };
 
         $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -319,7 +320,8 @@ angular.module('starter.controllers', [])
 
             var mapOptions = {
               center: coords,
-              zoom: 15
+              zoom: 15,
+              disableDefaultUI: true
             }
 
             $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -354,7 +356,6 @@ angular.module('starter.controllers', [])
         $rootScope.mapMarkers = {};
 
         // set up call-backs for the geoFire query
-
         $rootScope.mapQuery.on("key_exited", $scope.removeMarker);
 
         $rootScope.mapQuery.on("key_entered", $scope.addMarker);
