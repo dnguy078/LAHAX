@@ -270,7 +270,7 @@ angular.module('starter.controllers', [])
     var upRef = fbRef.child("message").child(userid); 
     fbRef.child("message").child(userid).child("downvote").once('value', function (snapshot) {
         var val = snapshot.val();
-        var updateVal = val - 1;
+        var updateVal = val + 1;
         upRef.update({
             "downvote": updateVal
         });
