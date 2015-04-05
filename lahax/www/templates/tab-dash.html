@@ -1,34 +1,17 @@
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
-  <!--
+  
     <div class="list card">
-      <div class="item item-divider">Recent Updates</div>
+      <div class="item item-divider">Current Location</div>
       <div class="item item-body">
         <div>
-          There is a fire in <b>sector 3</b>
+          ({{latitude}}, {{longitude}})
         </div>
       </div>
     </div>
-    <div class="list card">
-      <div class="item item-divider">Health</div>
-      <div class="item item-body">
-        <div>
-          You ate an apple today!
-        </div>
-      </div>
-    </div>
-    <div class="list card">
-      <div class="item item-divider">Upcoming</div>
-      <div class="item item-body">
-        <div>
-          You have <b>29</b> meetings on your calendar tomorrow.
-        </div>
-      </div>
-    </div>
-  -->
+  
   <head>
     <link href="//code.ionicframework.com/nightly/css/ionic.css" rel="stylesheet">
-
     <script src="//code.ionicframework.com/nightly/js/ionic.bundle.js"></script> 
 
   </head>
@@ -71,14 +54,6 @@
     </button>
 
     <script id="popup-postmessage.html" type="text/ng-template">
-
-      <form class="simple-form">
-        uid: <input type="text" ng-model="user.uid" /><br />
-        title : <input type="text" ng-model="user.title" /><br />
-        content : <input type="text" ng-model="user.content" /><br />
-        location :<input type="text" ng-model="user.location" /><br />
-        <button class="button button-full button-balanced" ng-click="postMessage(user)">Post</button>
-      </form>
     </script>
   </body>
 -->

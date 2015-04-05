@@ -10,6 +10,13 @@
 	right:1%;
 }
 
+#button_2 {
+	position:absolute;
+	bottom:25%;
+	padding:11px;
+	right:1%;
+}
+
  #my_button:hover {
 	background-color:#3B6EC2;
 } 
