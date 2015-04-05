@@ -100,11 +100,15 @@ angular.module('starter.controllers', [])
 		console.log("Sending Message");
 		var fbRef = new Firebase($rootScope.firebaseUrl);
 		var userRef = fbRef.child("message");
+        var location = {
+                lat: parseFloat($scope.latitude),
+                lng: parseFloat($scope.longitude)
+        };
 		var obj = {
 				uid : sharedProperties.getUID(), 
 				title: message.title,
 				content: message.content, 
-				location: message.location,
+				location: location,
 				privateMode: message.privateMode,
 				displayName: sharedProperties.getDisplayName()
 		};
