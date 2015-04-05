@@ -110,9 +110,20 @@ angular.module('starter.controllers', [])
 				content: message.content, 
 				location: location,
 				privateMode: message.privateMode,
-				displayName: sharedProperties.getDisplayName()
+				displayName: sharedProperties.getDisplayName(), 
+                upvote: 0,
+                downvote: 0,
+                postID: ""
 		};
 		var objRef = userRef.push(obj);
+        var postIdValue = objRef.name();
+        console.log("objectRef: " +  postIdValue);
+        //update unique postID
+        var postIDRef = fbRef.child("message").child(postIdValue);
+
+        postIDRef.update({
+         "postID": postIdValue
+        });
         var geoRef = fbRef.child("_geofire");
         var geoFire = new GeoFire(geoRef);
         geoFire.set(objRef.name(), [location.lat, location.lng]).then(function() {
@@ -233,6 +244,47 @@ angular.module('starter.controllers', [])
    var testChat = $firebaseArray(ref);
   $scope.messages = testChat;
   console.log($scope.messages); 
+
+
+
+  $scope.upvote = function(userid) {
+    var fbRef = new Firebase($rootScope.firebaseUrl); 
+
+    var upRef = fbRef.child("message").child(userid); 
+    fbRef.child("message").child(userid).child("upvote").once('value', function (snapshot) {
+        var val = snapshot.val();
+        var updateVal = val + 1;
+        upRef.update({
+            "upvote": updateVal
+        });
+
+        // To Update AngularJS $scope either use $apply or $timeout
+    });
+
+  }; 
+
+  $scope.downvote = function(userid) {
+    var fbRef = new Firebase($rootScope.firebaseUrl); 
+    console.log("fbRef " + fbRef)
+
+    var upRef = fbRef.child("message").child(userid); 
+    fbRef.child("message").child(userid).child("downvote").once('value', function (snapshot) {
+        var val = snapshot.val();
+        var updateVal = val - 1;
+        upRef.update({
+            "downvote": updateVal
+        });
+
+        // To Update AngularJS $scope either use $apply or $timeout
+        //$scope.$apply();
+    });
+
+
+//  $scope.$apply();
+
+  }; 
+
+
 })
 
 .controller('MapCtrl', function ($scope, $state, $firebase, $rootScope, $ionicPopup, sharedProperties) {
