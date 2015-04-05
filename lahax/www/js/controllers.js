@@ -116,7 +116,11 @@ angular.module('starter.controllers', [])
 .controller('MapCtrl', function ($scope, $firebase, $rootScope) {
     console.log("map controller called");
 
-    $scope.initializeMap = new function ($scope) {
+    $scope.updateMap = function() {
+        
+    }
+
+    $scope.initializeMap = new function () {
         var onSuccess = function(position) {
             $rootScope.latitude = position.coords.latitude;
             $rootScope.longitude = position.coords.longitude;
@@ -133,6 +137,7 @@ angular.module('starter.controllers', [])
             var marker = new google.maps.Marker({
                 position: coords,
                 map: map,
+                animation: google.maps.Animation.DROP,
                 title:"You are here!"
             })
         };
