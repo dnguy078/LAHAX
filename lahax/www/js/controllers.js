@@ -196,6 +196,15 @@ angular.module('starter.controllers', [])
 		userRef.push(obj);
 	}
 
+
+    $scope.cameraClick = function(){
+
+
+
+
+        
+    }
+
 	$scope.showPopup = function() {
 		$scope.message = {privateMode : false};
 	   var myPopup = $ionicPopup.show({
