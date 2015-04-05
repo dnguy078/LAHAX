@@ -290,17 +290,14 @@ angular.module('starter.controllers', [])
 .controller('MapCtrl', function ($scope, $state, $firebase, $rootScope, $ionicPopup, sharedProperties) {
     console.log("map controller called")
 
-    $scope.updateMarkers = function () {        
-        console.log("Map updated.");
-        console.log("latitude: " + $rootScope.coords.lat + "\n" + "longitude: " + $rootScope.coords.lng);
+    $scope.updateMap = function() {
         var coords = new google.maps.LatLng($rootScope.coords.lat,
                                             $rootScope.coords.lng);
+        // pan map to new location
+        $rootScope.map.panTo(coords);
 
-        $rootScope.geoQuery.cancel();
-        for (var i = $rootScope.messageMarkers.length - 1; i >= 0; i--) {
-            $rootScope.messageMarkers[i].setMap(null);
-        };
-
+        // move the user marker
+        $rootScope.usermarker.setMap(null);
         $rootScope.usermarker = new google.maps.Marker({
             position: coords,
             map: $rootScope.map,
@@ -308,42 +305,63 @@ angular.module('starter.controllers', [])
             title:"You are here!"
         });
 
-        $rootScope.messageMarkers = new Array();
-        var fbRef = new Firebase($rootScope.firebaseUrl);
-        var geoRef = fbRef.child("_geofire")
-        var geoFire = new GeoFire(geoRef);
-        $rootScope.geoQuery = geoFire.query({
+        // change geoFire query center
+        console.log("Moving query center.")
+        $rootScope.mapQuery.updateCriteria({
             center: [$rootScope.coords.lat, $rootScope.coords.lng],
             radius: 10
-        });
-        $rootScope.geoQuery.on("key_entered", function(key, location, distance) {
-            console.log("Found message!");
-            var coords = new google.maps.LatLng(location[0], location[1]);
-            var marker = new google.maps.Marker({
-                position: coords,
-                map: $rootScope.map
-            });
-            $rootScope.messageMarkers.push(marker)
+        })
+    };
+
+    $scope.addMarker = function(key, location, distance) {
+        // add the key to the set of markers, add a marker to the map
+        console.log("new message found!");
+        var location = new google.maps.LatLng(location[0], location[1]);
+        var marker = new google.maps.Marker({
+            position: location,
+            map: $rootScope.map,
+            animation: google.maps.Animation.DROP,
+            title:"You are here!"
         });
 
+        $rootScope.mapMarkers[key] = marker  
     }
 
-    $scope.updateMap = function() {
-        var coords = new google.maps.LatLng($rootScope.coords.lat,
-                                            $rootScope.coords.lng);
+    $scope.removeMarker = function(key, location, distance) {
+        // delete the appropriate marker from the map
+        console.log("message deleted: " + key);
+        var marker = $rootScope.mapMarkers[key];
+        if (marker) {
+            marker.setMap(null);
+        }
+        delete $rootScope.mapMarkers[key];
+        console.log($rootScope.mapMarkers);
+    }
 
+    $scope.initializeMap = new function () {
+
+        // initialize a default map first
+        $rootScope.coords = {
+            lat: 37.0,
+            lng: -122.06
+        }
+
+        var coords = new google.maps.LatLng($rootScope.coords.lat, $rootScope.coords.lng);
         var mapOptions = {
-          center: coords,
-          zoom: 15
+            center: coords,
+            zoom: 15,
+            disableDefaultUI: true
         };
 
         $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
             mapOptions);
 
-        $scope.updateMarkers();
-    };
+        $rootScope.usermarker = new google.maps.Marker({
+            position: coords,
+            map: $rootScope.map
+        });
 
-    $scope.initializeMap = new function () {
+        // detect the user's current position and center the map on that location
         var onSuccess = function(position) {
             $rootScope.coords = {
                 lat: position.coords.latitude,
@@ -354,118 +372,91 @@ angular.module('starter.controllers', [])
 
             var mapOptions = {
               center: coords,
-              zoom: 15
+              zoom: 15,
+              disableDefaultUI: true
             }
 
             $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
                 mapOptions);
 
+            if ($rootScope.usermarker) {
+                $rootScope.usermarker.setMap(null);
+            }
             $rootScope.usermarker = new google.maps.Marker({
                 position: coords,
                 map: $rootScope.map,
-                animation: google.maps.Animation.DROP,
-                title:"You are here!"
-            })
-
-            $rootScope.messageMarkers = new Array();
-
-            var fbRef = new Firebase($rootScope.firebaseUrl);
-            var geoRef = fbRef.child("_geofire")
-            var geoFire = new GeoFire(geoRef);
-            $rootScope.geoQuery = geoFire.query({
-                center: [$rootScope.coords.lat, $rootScope.coords.lng],
-                radius: 10
+                animation: google.maps.Animation.DROP
             });
-            $rootScope.geoQuery.on("key_entered", function(key, location, distance) {
-                console.log("Found message!");
-                var coords = new google.maps.LatLng(location[0], location[1]);
-                var marker = new google.maps.Marker({
-                    position: coords,
-                    map: $rootScope.map
-                });
-                $rootScope.messageMarkers.push(marker)
-            });
-
-            $rootScope.$watch("coords", $scope.updateMarkers, objectEquality=true);
         };
 
-        // onError Callback receives a PositionError object
+        // if we can't detect the user's current location, choose a preset location instead
         var onError = function(error) {
             alert('code: '    + error.code    + '\n' +
                   'message: ' + error.message + '\n');
-
-            $rootScope.coords = {
-                lat: 37.0,
-                lng: 122.06
-            }
-
-            var mapOptions = {
-              center: coords,
-              zoom: 15
-            };
-
-            var map = new google.maps.Map(document.getElementById('map-canvas'),
-                mapOptions);
-
-            $rootScope.$watch("coords", $scope.updateMarkers, objectEquality=true);
         };
 
         navigator.geolocation.getCurrentPosition(onSuccess, onError);    
+
+        // initialize the geoFire query and a dictionary of active markers
+        var fbRef = new Firebase($rootScope.firebaseUrl);
+        var geoRef = fbRef.child("_geofire");
+        var geoFire = new GeoFire(geoRef);
+        $rootScope.mapQuery = geoFire.query({
+            center: [$rootScope.coords.lat, $rootScope.coords.lng],
+            radius: 20
+        });
+        $rootScope.mapMarkers = {};
+
+        // set up call-backs for the geoFire query
+        $rootScope.mapQuery.on("key_exited", $scope.removeMarker);
+
+        $rootScope.mapQuery.on("key_entered", $scope.addMarker);
+
+        $rootScope.$watch("coords", $scope.updateMap, objectEquality=true);
     };
 
     $scope.postMessage = function() {
     	$state.go('tab.dash');
     }
-
-
 })
 
-.controller('GeoFireCtrl', function ($scope, $firebase, $rootScope, sharedProperties) {
-    console.log("controller called")
+// .controller('GeoFireCtrl', function ($scope, $firebase, $rootScope, sharedProperties) {
+//     console.log("controller called")
 
-    $scope.postLocationKey = function(key, x_coord, y_coord) {
-        console.log("Sending Message");
-        var fbRef = new Firebase($rootScope.firebaseUrl);
-        var userRef = fbRef.child("_geofire");
-        var geoFire = new GeoFire(userRef);
-        geoFire.set(key, [parseFloat(x_coord), parseFloat(y_coord)]).then(function() {
-          console.log("Provided keys have been added to GeoFire");
-        }, function(error) {
-          console.log("Error: " + error);
-        });
-    }
+//     $scope.postLocationKey = function(key, x_coord, y_coord) {
+//         console.log("Sending Message");
+//         var fbRef = new Firebase($rootScope.firebaseUrl);
+//         var userRef = fbRef.child("_geofire");
+//         var geoFire = new GeoFire(userRef);
+//         geoFire.set(key, [parseFloat(x_coord), parseFloat(y_coord)]).then(function() {
+//           console.log("Provided keys have been added to GeoFire");
+//         }, function(error) {
+//           console.log("Error: " + error);
+//         });
+//     }
 
-    $scope.getKey = function(key) {
-        console.log("Retrieving Message");
-        var fbRef = new Firebase($rootScope.firebaseUrl);
-        var userRef = fbRef.child("_geofire");
-        var geoFire = new GeoFire(userRef);
-        geoFire.get(key).then(function(location) {
-          if (location === null) {
-            console.log("Provided key is not in GeoFire");
-          }
-          else {
-            console.log("Provided key has a location of " + location);
-          }
-        }, function(error) {
-          console.log("Error: " + error);
-        });
-    }
+//     $scope.deleteKey = function(key) {
+//         console.log("Deleting message...");
+//         var fbRef = new Firebase($rootScope.firebaseUrl);
+//         var userRef = fbRef.child("_geofire");
+//         var geoFire = new GeoFire(userRef);
+//         geoFire.remove(key);
+//     }
 
-    $scope.scanLocation = function(x, y, r) {
-        console.log("Finding Messages");
-        var fbRef = new Firebase($rootScope.firebaseUrl);
-        var userRef = fbRef.child("_geofire");
-        var geoFire = new GeoFire(userRef);
-        var geoQuery = geoFire.query({
-            center : [parseFloat(x), parseFloat(y)],
-            radius : parseFloat(r)
-        });
-        geoQuery.on("key_entered", function(key, location, distance) {
-            console.log(key + " at distance " + distance);
-        });
-    }
-})
+//     $scope.scanLocation = function(x, y, r) {
+//         console.log("Finding Messages");
+//         var fbRef = new Firebase($rootScope.firebaseUrl);
+//         var userRef = fbRef.child("_geofire");
+//         var geoFire = new GeoFire(userRef);
+//         var geoQuery = geoFire.query({
+//             center : [parseFloat(x), parseFloat(y)],
+//             radius : parseFloat(r)
+//         });
+//         geoQuery.on("key_entered", function(key, location, distance) {
+//             console.log(key + " at distance " + distance);
+//         });
+//     }
+// })
 
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats, sharedProperties) {
