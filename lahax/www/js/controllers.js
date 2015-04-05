@@ -75,7 +75,7 @@ angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
 	console.log("controller called")
-
+/*
 	$scope.postMessage = function(message){
 		console.log("Sending Message");
 		var fbRef = new Firebase($rootScope.firebaseUrl);
@@ -87,6 +87,7 @@ angular.module('starter.controllers', [])
 				location: message.location
 		};
 		userRef.push(obj);
+
 	}
 
 	$scope.showPopup = function() {
@@ -104,6 +105,7 @@ angular.module('starter.controllers', [])
 	     console.log('Tapped!', res);
 	   });
   	};
+  	*/
 })
 
 .controller('ChatsCtrl', function($scope, $firebaseArray) {
@@ -113,7 +115,7 @@ angular.module('starter.controllers', [])
   console.log($scope.messages); 
 })
 
-.controller('MapCtrl', function ($scope, $firebase, $rootScope) {
+.controller('MapCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
     console.log("map controller called")
 
     $scope.initializeMap = new function initialize() {
@@ -124,6 +126,54 @@ angular.module('starter.controllers', [])
         var map = new google.maps.Map(document.getElementById('map-canvas'),
             mapOptions);
     }
+
+    $scope.postMessage = function(message, self){
+		console.log("Sending Message");
+		var fbRef = new Firebase($rootScope.firebaseUrl);
+		var userRef = fbRef.child("message");
+		var obj = {
+				uid : message.uid, 
+				title: message.title,
+				content: message.content, 
+				location: message.location
+		};
+		userRef.push(obj);
+	}
+
+	$scope.showPopup = function() {
+		$scope.message = {privateMode : false};
+	   var myPopup = $ionicPopup.show({
+	     title: 'Create message',
+	     subTitle: 'Craft your message',
+	     templateUrl: '/templates/popup-postmessage.html',
+	     scope: $scope,
+	     buttons: [
+	  
+	       {
+        	text: '<b>Post</b>',
+        	type: 'button-positive',
+        	onTap: function(e) {
+          		var fbRef = new Firebase($rootScope.firebaseUrl);
+				var userRef = fbRef.child("message");
+				var obj = {
+					uid : $scope.message.uid, 
+					title: $scope.message.title,
+					content: $scope.message.content, 
+					location: $scope.message.location,
+					privateMode: $scope.message.privateMode
+				};
+				userRef.push(obj);
+	        }
+	      },
+	      { text: 'Cancel',
+	         type: 'button-assertive' }
+	     ]
+	   });
+
+	   myPopup.then(function(res) {
+	     console.log('Tapped!', res);
+	   });
+  	};
 })
 
 .controller('GeoFireCtrl', function ($scope, $firebase, $rootScope) {

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link href="//code.ionicframework.com/nightly/css/ionic.css" rel="stylesheet">
+
+    <script src="//code.ionicframework.com/nightly/js/ionic.bundle.js"></script> 
+
     <style type="text/css">
       html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
     </style>
@@ -19,6 +23,22 @@
     </script>
   </head>
   <body>
-<div id="map-canvas"></div>
+
+    <div id="map-canvas"></div>
+    <button class="button button-balanced" id="my_button" ng-click="showPopup()">
+      <i class="icon ion-plus"></i>
+    </button>
+<!--
+    <script id="popup-postmessage.html" type="text/ng-template">
+
+      <form class="simple-form">
+        uid: <input type="text" ng-model="user.uid" /><br />
+        title : <input type="text" ng-model="user.title" /><br />
+        content : <input type="text" ng-model="user.content" /><br />
+        location :<input type="text" ng-model="user.location" /><br />
+        <button class="button button-full button-balanced" ng-click="postMessage(user)">Post</button>
+      </form>
+    </script>
+-->
   </body>
 </html>

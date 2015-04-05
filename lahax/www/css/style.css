@@ -1,0 +1,21 @@
+.div-container {
+  position: relative;
+  display: inline-block;
+}
+
+#my_button {
+	position:absolute;
+	bottom:10%;
+	padding: 11px;
+	right:1%;
+}
+
+ #my_button:hover {
+	background-color:#3B6EC2;
+} 
+
+
+.inputWrap {
+	margin: 20px 20px;
+	position: center;
+}
