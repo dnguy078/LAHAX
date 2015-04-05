@@ -118,30 +118,52 @@ angular.module('starter.controllers', [])
 .controller('MapCtrl', function ($scope, $firebase, $rootScope, $ionicPopup) {
     console.log("map controller called")
 
-    $scope.updateMap = function() {
-        
+    $scope.updateMap = function () {
+        console.log("Map updated.");
+        console.log("latitude: " + $rootScope.coords.lat + "\n" + "longitude: " + $rootScope.coords.lng);
+        var coords = new google.maps.LatLng($rootScope.coords.lat,
+                                            $rootScope.coords.lng);
+
+        var mapOptions = {
+            center: coords,
+            zoom: 15
+        }
+
+        $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+
+        $rootScope.usermarker = new google.maps.Marker({
+            position: coords,
+            map: $rootScope.map,
+            animation: google.maps.Animation.DROP,
+            title:"You are here!"
+        })
     }
 
     $scope.initializeMap = new function () {
         var onSuccess = function(position) {
-            $rootScope.latitude = position.coords.latitude;
-            $rootScope.longitude = position.coords.longitude;
-            var coords = new google.maps.LatLng($rootScope.latitude, $rootScope.longitude);
+            $rootScope.coords = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude}
+            var coords = new google.maps.LatLng(position.coords.latitude, 
+                                                position.coords.longitude);
 
             var mapOptions = {
-              center: { lat: $rootScope.latitude, lng: $rootScope.longitude},
+              center: { lat: $rootScope.coords.lat, lng: $rootScope.coords.lng},
               zoom: 15
             };
 
-            var map = new google.maps.Map(document.getElementById('map-canvas'),
+            $rootScope.map = new google.maps.Map(document.getElementById('map-canvas'),
                 mapOptions);
 
-            var marker = new google.maps.Marker({
+            $rootScope.usermarker = new google.maps.Marker({
                 position: coords,
-                map: map,
+                map: $rootScope.map,
                 animation: google.maps.Animation.DROP,
                 title:"You are here!"
             })
+
+            $rootScope.$watch("coords", $scope.updateMap, objectEquality=true);
         };
 
         // onError Callback receives a PositionError object
@@ -151,7 +173,7 @@ angular.module('starter.controllers', [])
                   'message: ' + error.message + '\n');
 
             var mapOptions = {
-              center: { lat: 43.0722, lng: 118.4441},
+              center: { lat: 44.0722, lng: 118.4441},
               zoom: 8
             };
             var map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -266,6 +288,8 @@ angular.module('starter.controllers', [])
             var onSuccess = function(position) {
                 $scope.latitude = position.coords.latitude;
                 $scope.longitude = position.coords.longitude;
+                $rootScope.coords.lat = position.coords.latitude;
+                $rootScope.coords.lng = position.coords.longitude;
                 $scope.$apply();
             };
 
